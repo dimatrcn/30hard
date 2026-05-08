@@ -507,7 +507,7 @@ function renderHydration(ml,interactive){
   document.getElementById('hydration-fill').style.width=pct+'%';
   document.getElementById('hydration-sublabel').textContent=ml+' / '+HYDRATION_GOAL+' ml — '+(ml>=HYDRATION_GOAL?'✓ GOAL MET':'GOAL NOT MET');
   const icon=document.getElementById('hydration-icon');
-  icon.style.color=ml>=HYDRATION_GOAL?'var(--gold)':'';icon.style.borderColor=ml>=HYDRATION_GOAL?'var(--blue)':'';
+  icon.style.color=ml>=HYDRATION_GOAL?'var(--blue)':'';icon.style.borderColor=ml>=HYDRATION_GOAL?'var(--blue)':'';
   document.querySelectorAll('.hydration-btn').forEach(b=>b.style.pointerEvents=interactive?'':'none');
 }
 
