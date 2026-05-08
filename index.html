@@ -586,7 +586,7 @@ function renderAerobic(){
     const dateLabel=new Date(s.date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
     const dotClass=s.type==='Running'?'run':'cycle';
     const row=document.createElement('div');row.className='session-entry';
-    row.innerHTML=`<div class="session-info"><div class="session-dot ${dotClass}"></div><div><div class="session-type-label">${s.type==='Running'?'🏃 Running':'🚴 Cycling'}</div><div class="session-date-label">${dateLabel}</div></div></div><div class="session-mins">${s.mins}<span> MIN</span></div><button class="del-btn" onclick="deleteSession(${realIdx})">✕</button>`;
+    row.innerHTML=`<div class="session-info"><div class="session-dot ${dotClass}"></div><div><div class="session-type-label">${s.type==='Running'?' Running':' Cycling'}</div><div class="session-date-label">${dateLabel}</div></div></div><div class="session-mins">${s.mins}<span> MIN</span></div><button class="del-btn" onclick="deleteSession(${realIdx})">✕</button>`;
     list.appendChild(row);
   });
 }
