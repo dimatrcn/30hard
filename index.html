@@ -423,10 +423,57 @@ function getDayKey(idx){
   return target.toLocaleDateString('en-CA',{timeZone:TZ});
 }
 
+const STORAGE_KEY = 'kakutogi-v5';
+
 async function loadState(){
-  try{const r=await window.storage.get('kakutogi-v5');if(r){const d=JSON.parse(r.value);state=d.days||{};startISO=d.startISO||null;aerobicSessions=d.aerobicSessions||[];weeklyTarget=d.weeklyTarget||120;}}catch(e){}
-  document.getElementById('weekly-target').value=weeklyTarget;
-  await persist();init();
+  try {
+    let raw = null;
+
+    // Try custom app storage first
+    if (window.storage && window.storage.get) {
+      const r = await window.storage.get(STORAGE_KEY);
+      raw = r?.value || null;
+    }
+
+    // Fallback to browser localStorage
+    if (!raw) {
+      raw = localStorage.getItem(STORAGE_KEY);
+    }
+
+    if (raw) {
+      const d = JSON.parse(raw);
+      state = d.days || {};
+      startISO = d.startISO || null;
+      aerobicSessions = d.aerobicSessions || [];
+      weeklyTarget = d.weeklyTarget || 120;
+    }
+  } catch(e) {
+    console.error('Load failed:', e);
+  }
+
+  document.getElementById('weekly-target').value = weeklyTarget;
+  init();
+}
+
+async function persist(){
+  const data = JSON.stringify({
+    days: state,
+    startISO,
+    aerobicSessions,
+    weeklyTarget
+  });
+
+  try {
+    // Save to custom storage if available
+    if (window.storage && window.storage.set) {
+      await window.storage.set(STORAGE_KEY, data);
+    }
+
+    // Always save to localStorage too
+    localStorage.setItem(STORAGE_KEY, data);
+  } catch(e) {
+    console.error('Save failed:', e);
+  }
 }
 
 async function persist(){try{await window.storage.set('kakutogi-v5',JSON.stringify({days:state,startISO,aerobicSessions,weeklyTarget}));}catch(e){}}
@@ -520,7 +567,7 @@ function adjustHydration(delta){
   const h=state[key].hydration,s=state[key].habits||[];
   document.getElementById('stat-today').textContent=(s.length+(h>=HYDRATION_GOAL?1:0))+'/'+(TOTAL+1);
   document.getElementById('complete-banner').classList.toggle('show',s.length===TOTAL&&h>=HYDRATION_GOAL);
-  updateStats();renderCalendar();
+  updateStats();renderCalendar();persist();
 }
 
 function toggleHabit(el){
@@ -529,7 +576,7 @@ function toggleHabit(el){
   if(!state[key])state[key]={habits:[],hydration:0};
   if(!state[key].habits)state[key].habits=[];
   if(state[key].habits.includes(id))state[key].habits=state[key].habits.filter(x=>x!==id);else state[key].habits.push(id);
-  viewingDay=null;renderToday();updateStats();renderCalendar();
+  viewingDay=null;renderToday();updateStats();renderCalendar();persist();
 }
 
 async function saveDay(){
