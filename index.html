@@ -269,10 +269,7 @@
       </div>
       <div class="habit-group">
         <div class="group-title">訓練 — TRAINING</div>
-        <div class="habit-item" data-id="jump-rope" onclick="toggleHabit(this)"><div class="habit-left"><div class="habit-icon">縄</div><div><div class="habit-name">10 Min Jump Rope</div><span class="habit-name-ja">縄跳び — NAWA-TOBI</span></div></div><div class="habit-check"></div></div>
-        <div class="habit-item" data-id="conditioning" onclick="toggleHabit(this)"><div class="habit-left"><div class="habit-icon">鉄</div><div><div class="habit-name">10 Min Strength & Conditioning</div><span class="habit-name-ja">体力強化 — TAIRYOKU-KYOUKA</span></div></div><div class="habit-check"></div></div>
-        <div class="habit-item" data-id="shadowbox" onclick="toggleHabit(this)"><div class="habit-left"><div class="habit-icon">拳</div><div><div class="habit-name">10 Min Shadowboxing</div><span class="habit-name-ja">影打ち — KAGE-UCHI</span></div></div><div class="habit-check"></div></div>
-        <div class="habit-item" data-id="mobility" onclick="toggleHabit(this)"><div class="habit-left"><div class="habit-icon">柔</div><div><div class="habit-name">10 Min Hip Mobility</div><span class="habit-name-ja">柔軟 — JUU-NAN</span></div></div><div class="habit-check"></div></div>
+        <div class="habit-item" data-id="muay-thai" onclick="toggleHabit(this)"><div class="habit-left"><div class="habit-icon">武</div><div><div class="habit-name">Muay Thai Cardio / Strength & Conditioning</div><span class="habit-name-ja">ムエタイ訓練 — MUETAI-KUNREN</span></div></div><div class="habit-check"></div></div>
       </div>
       <div class="habit-group">
         <div class="group-title">回復 — RECOVERY</div>
@@ -325,8 +322,8 @@
 </div>
 
 <script>
-const HABITS=['no-nicotine','no-alcohol','no-junk','creatine','high-protein','jump-rope','conditioning','shadowbox','mobility','cold','sleep'];
-const TOTAL=11, HYDRATION_GOAL=2000, TZ='Europe/Bucharest';
+const HABITS=['no-nicotine','no-alcohol','no-junk','creatine','high-protein','muay-thai','cold','sleep'];
+const TOTAL=8, HYDRATION_GOAL=2000, TZ='Europe/Bucharest';
 let state={}, startISO=null, aerobicSessions=[], weeklyTarget=120, viewingDay=null, selectedType='Running';
 
 function getBucharestNow(){return new Date(new Date().toLocaleString('en-US',{timeZone:TZ}));}
