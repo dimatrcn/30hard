@@ -70,7 +70,7 @@
   .progress-track{height:3px;background:var(--dark4);position:relative}
   .progress-fill{height:100%;background:linear-gradient(to right,var(--red),var(--gold));transition:width 0.6s ease;position:relative}
   .progress-fill::after{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;position:absolute;right:-3px;top:-1.5px}
-  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px}
+  .stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:32px}
   .stat-card{background:var(--dark2);border:1px solid var(--border);padding:14px;text-align:center}
   .stat-num{font-family:var(--font-title);font-size:36px;color:var(--text);line-height:1}
   .stat-num.highlight{color:var(--gold)}
@@ -85,7 +85,7 @@
   .day-dot.perfect::after{content:'';position:absolute;inset:3px;background:rgba(212,160,23,0.12)}
   .day-dot.partial{background:var(--dark3);border-color:var(--red);color:var(--red)}
   .day-dot.today{border-color:var(--red-light);box-shadow:0 0 8px rgba(231,76,60,0.4);color:var(--text);font-weight:700}
-  .day-dot.future{opacity:0.3;cursor:default}
+  .day-dot.selected{background:var(--red);border-color:var(--red-light);color:#fff}
   .habits-section{margin-bottom:40px}
   .today-label{font-family:var(--font-title);font-size:32px;letter-spacing:3px;color:var(--text);margin-bottom:8px}
   .today-date{font-size:11px;letter-spacing:3px;color:var(--red);font-family:var(--font-mono);margin-bottom:20px}
@@ -202,11 +202,11 @@
   </div>
 
    <div class="header">
-    <div class="kanji-row">格闘技・30日間チャレンジ</div>
-    <span class="title-main">FIGHT THE MONSTER</span>
-    <span class="title-sub" style="color:var(--gold)">30 DAYS TO KILL THIS MOTHERFUCKER</span>
-    <span class="title-sub"">AND GO FROM ADDICT TO FIGHTER</span>
-    <div class="header-divider"><span>初戦への道</span></div>
+    <div class="kanji-row">ムエタイ・30日間チャレンジ</div>
+    <span class="title-main">MUAY THAI 30</span>
+    <span class="title-sub" style="color:var(--gold)">ONE MONTH OF LIVING LIKE A FIGHTER</span>
+    <span class="title-sub">TO TRANSFORM MY BODY AND MIND</span>
+    <div class="header-divider"><span>武道の月</span></div>
   </div>
 
   <!-- Live timer -->
@@ -230,7 +230,6 @@
 
   <div class="stats-row">
     <div class="stat-card"><div class="stat-num highlight" id="stat-today">—</div><div class="stat-lbl">TODAY</div></div>
-    <div class="stat-card"><div class="stat-num" id="stat-total">0</div><div class="stat-lbl">TOTAL HABITS</div></div>
     <div class="stat-card"><div class="stat-num" id="stat-days-left">30</div><div class="stat-lbl">DAYS LEFT</div></div>
   </div>
 
@@ -449,10 +448,13 @@ function renderCalendar(){
   for(let i=0;i<30;i++){
     const key=getDayKey(i),dot=document.createElement('div');
     dot.className='day-dot';dot.textContent=i+1;
-    if(dayIdx<0||i>dayIdx)dot.classList.add('future');
+    if(dayIdx<0)dot.classList.add('future');
+    else if(i>dayIdx)dot.classList.add('future');
     else if(i===dayIdx)dot.classList.add('today');
     else{const d=state[key];if(d&&d.habits&&d.habits.length===TOTAL&&(d.hydration||0)>=HYDRATION_GOAL)dot.classList.add('perfect');else if(d&&((d.habits&&d.habits.length>0)||(d.hydration||0)>0))dot.classList.add('partial');}
-    dot.onclick=()=>{if(dayIdx>=0&&i<=dayIdx){viewingDay=i;renderToday();}};
+    dot.onclick=()=>{if(dayIdx>=0){viewingDay=i;renderCalendar();renderToday();}};
+    const activeIdx=viewingDay!==null?viewingDay:Math.max(dayIdx,0);
+    if(dayIdx>=0&&i===activeIdx)dot.classList.add('selected');
     cal.appendChild(dot);
   }
 }
@@ -488,13 +490,13 @@ function renderToday(){
   document.getElementById('today-date').textContent=d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).toUpperCase()+(isToday?' — 今日':idx>dayIdx?' — 未来':' — 過去');
   document.getElementById('day-num').textContent=dayIdx+1;
 
-  HABITS.forEach(id=>{const el=document.querySelector(`[data-id="${id}"]`);if(!el)return;el.classList.toggle('checked',saved.includes(id));el.style.pointerEvents=isToday?'':'none';el.style.opacity=!isToday?'0.5':'';});
-  renderHydration(hydration,isToday);
+  HABITS.forEach(id=>{const el=document.querySelector(`[data-id="${id}"]`);if(!el)return;el.classList.toggle('checked',saved.includes(id));el.style.pointerEvents='';el.style.opacity='';});
+  renderHydration(hydration,true);
 
   const checkedCount=saved.length+(hydration>=HYDRATION_GOAL?1:0);
   document.getElementById('stat-today').textContent=checkedCount+'/'+(TOTAL+1);
   document.getElementById('complete-banner').classList.toggle('show',saved.length===TOTAL&&hydration>=HYDRATION_GOAL&&isToday);
-  const btn=document.getElementById('save-btn');btn.style.display=isToday?'':'none';btn.classList.remove('saved');btn.textContent='記録 — SAVE DAY';
+  const btn=document.getElementById('save-btn');btn.style.display='';btn.classList.remove('saved');btn.textContent=isToday?'記録 — SAVE DAY':'記録 — SAVE DAY '+(idx+1);
 }
 
 function renderHydration(ml,interactive){
@@ -510,7 +512,8 @@ function renderHydration(ml,interactive){
 
 function adjustHydration(delta){
   const dayIdx=getDayIndex();if(dayIdx<0)return;
-  const key=getDayKey(dayIdx);
+  const idx=viewingDay!==null?viewingDay:dayIdx;
+  const key=getDayKey(idx);
   if(!state[key])state[key]={habits:[],hydration:0};
   state[key].hydration=Math.max(0,(state[key].hydration||0)+delta);
   renderHydration(state[key].hydration,true);
@@ -522,11 +525,12 @@ function adjustHydration(delta){
 
 function toggleHabit(el){
   const dayIdx=getDayIndex();if(dayIdx<0)return;
-  const id=el.dataset.id,key=getDayKey(dayIdx);
+  const idx=viewingDay!==null?viewingDay:dayIdx;
+  const id=el.dataset.id,key=getDayKey(idx);
   if(!state[key])state[key]={habits:[],hydration:0};
   if(!state[key].habits)state[key].habits=[];
   if(state[key].habits.includes(id))state[key].habits=state[key].habits.filter(x=>x!==id);else state[key].habits.push(id);
-  viewingDay=null;renderToday();updateStats();renderCalendar();persist();
+  renderToday();updateStats();renderCalendar();persist();
 }
 
 function saveDay(){
@@ -545,7 +549,7 @@ function updateStats(){
   document.getElementById('perfect-num').textContent=perfect;
   document.getElementById('pct-num').textContent=pct+'%';
   document.getElementById('progress-fill').style.width=pct+'%';
-  document.getElementById('stat-total').textContent=totalHabits;
+
   document.getElementById('stat-days-left').textContent=dayIdx<0?30:Math.max(30-daysCompleted,0);
   const msgs=['— PREPARE —','— BEGIN —','KEEP GOING','頑張れ！','WARRIOR','無敵！'];
   document.getElementById('streak-msg').textContent=dayIdx<0?msgs[0]:streak===0?msgs[1]:streak<3?msgs[2]:streak<7?msgs[3]:streak<14?msgs[4]:msgs[5];
