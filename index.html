@@ -76,9 +76,11 @@
   .stat-num.highlight{color:var(--gold)}
   .stat-lbl{font-size:9px;letter-spacing:3px;color:var(--text-dim);font-family:var(--font-mono);margin-top:4px}
   .calendar-section{margin-bottom:40px}
-  .section-label{font-size:10px;letter-spacing:4px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:12px;display:flex;align-items:center;gap:12px}
+  .section-label{font-size:10px;letter-spacing:4px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:12px;display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none}
   .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
-  .calendar-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+  .section-label .cal-toggle{font-size:10px;color:var(--text-muted);transition:transform 0.3s;display:inline-block;margin-left:4px}
+  .calendar-grid{display:grid;grid-template-columns:repeat(13,1fr);gap:3px;overflow:hidden;max-height:3000px;transition:max-height 0.5s ease,opacity 0.3s ease;opacity:1}
+  .calendar-grid.collapsed{max-height:0;opacity:0;margin:0}
   .day-dot{aspect-ratio:1;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;font-family:var(--font-mono);color:var(--text-dim);cursor:pointer;transition:all 0.15s;position:relative;background:var(--dark2)}
   .day-dot:hover{border-color:var(--text-muted)}
   .day-dot.perfect{background:var(--dark3);border-color:var(--gold);color:var(--gold)}
@@ -202,11 +204,11 @@
   </div>
 
    <div class="header">
-    <div class="kanji-row">ムエタイ・30日間チャレンジ</div>
-    <span class="title-main">MUAY THAI 30</span>
-    <span class="title-sub" style="color:var(--gold)">ONE MONTH OF TRAINING</span> 
-    <span class="title-sub" style="color:var(--gold)">AND BEING CLEAN</span>
-    <span class="title-sub">TO GET INTO A FIGHT READY SHAPE</span>
+    <div class="kanji-row">ムエタイ・365日間チャレンジ</div>
+    <span class="title-main">PROJECT MUAY THAI</span>
+    <span class="title-sub" style="color:var(--gold)">Act like the man you want to be, until you are him.</span>
+    <span class="title-sub">One year of training and discipline so I can look in the mirror and see a</span>
+    <span class="title-sub">BAD MOTHERFUCKER</span>
     <div class="header-divider"><span>武道の月</span></div>
   </div>
 
@@ -225,17 +227,17 @@
   </div>
 
   <div class="progress-section">
-    <div class="progress-header"><div class="progress-label">PROGRESS — 30 DAYS</div><div class="progress-pct" id="pct-num">0%</div></div>
+    <div class="progress-header"><div class="progress-label">PROGRESS — 365 DAYS</div><div class="progress-pct" id="pct-num">0%</div></div>
     <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
   </div>
 
   <div class="stats-row">
     <div class="stat-card"><div class="stat-num highlight" id="stat-today">—</div><div class="stat-lbl">TODAY</div></div>
-    <div class="stat-card"><div class="stat-num" id="stat-days-left">30</div><div class="stat-lbl">DAYS LEFT</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-days-left">365</div><div class="stat-lbl">DAYS LEFT</div></div>
   </div>
 
   <div class="calendar-section">
-    <div class="section-label">月間カレンダー MONTHLY CALENDAR</div>
+    <div class="section-label" onclick="toggleCalendar()">年間カレンダー YEARLY CALENDAR<span class="cal-toggle" id="cal-toggle">▲</span></div>
     <div class="calendar-grid" id="calendar"></div>
   </div>
 
@@ -385,6 +387,13 @@ function tickTimer(){
   }
 }
 
+function toggleCalendar(){
+  const grid=document.getElementById('calendar');
+  const toggle=document.getElementById('cal-toggle');
+  const collapsed=grid.classList.toggle('collapsed');
+  toggle.textContent=collapsed?'▼':'▲';
+}
+
 function toggleSettings(){
   const p=document.getElementById('settings-panel');
   p.classList.toggle('open');
@@ -446,7 +455,7 @@ function init(){
 function renderCalendar(){
   const cal=document.getElementById('calendar');cal.innerHTML='';
   const dayIdx=getDayIndex();
-  for(let i=0;i<30;i++){
+  for(let i=0;i<365;i++){
     const key=getDayKey(i),dot=document.createElement('div');
     dot.className='day-dot';dot.textContent=i+1;
     if(dayIdx<0)dot.classList.add('future');
@@ -543,15 +552,15 @@ function saveDay(){
 function updateStats(){
   const dayIdx=getDayIndex();let streak=0,perfect=0,totalHabits=0;
   const daysCompleted=Math.max(dayIdx,0);
-  for(let i=0;i<30;i++){const d=state[getDayKey(i)]||{};const h=d.habits||[];const hydOk=(d.hydration||0)>=HYDRATION_GOAL;totalHabits+=h.length+(hydOk?1:0);if(h.length===TOTAL&&hydOk)perfect++;}
+  for(let i=0;i<365;i++){const d=state[getDayKey(i)]||{};const h=d.habits||[];const hydOk=(d.hydration||0)>=HYDRATION_GOAL;totalHabits+=h.length+(hydOk?1:0);if(h.length===TOTAL&&hydOk)perfect++;}
   for(let i=daysCompleted-1;i>=0;i--){const d=state[getDayKey(i)]||{};if((d.habits||[]).length===TOTAL&&(d.hydration||0)>=HYDRATION_GOAL)streak++;else break;}
-  const pct=dayIdx<0?0:Math.round((daysCompleted/30)*100);
+  const pct=dayIdx<0?0:Math.round((daysCompleted/365)*100);
   document.getElementById('streak-num').textContent=streak;
   document.getElementById('perfect-num').textContent=perfect;
   document.getElementById('pct-num').textContent=pct+'%';
   document.getElementById('progress-fill').style.width=pct+'%';
 
-  document.getElementById('stat-days-left').textContent=dayIdx<0?30:Math.max(30-daysCompleted,0);
+  document.getElementById('stat-days-left').textContent=dayIdx<0?30:Math.max(365-daysCompleted,0);
   const msgs=['— PREPARE —','— BEGIN —','KEEP GOING','頑張れ！','WARRIOR','無敵！'];
   document.getElementById('streak-msg').textContent=dayIdx<0?msgs[0]:streak===0?msgs[1]:streak<3?msgs[2]:streak<7?msgs[3]:streak<14?msgs[4]:msgs[5];
 }
