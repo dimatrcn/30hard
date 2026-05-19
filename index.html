@@ -47,7 +47,24 @@
   .header-divider::before,.header-divider::after{content:'';flex:1;height:1px;background:var(--border-light)}
   .header-divider span{font-size:10px;letter-spacing:4px;color:var(--text-muted);font-family:var(--font-mono)}
 
-  /* Live timer */
+  /* Manifesto Scroll */
+  .scroll-trigger{display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;margin:0 auto 0;padding:8px 0;user-select:none;opacity:0.6;transition:opacity 0.2s}
+  .scroll-trigger:hover{opacity:1}
+  .scroll-trigger-line{flex:1;height:1px;background:var(--border-light);max-width:80px}
+  .scroll-trigger-label{font-size:9px;letter-spacing:4px;color:var(--text-muted);font-family:var(--font-mono)}
+  .scroll-trigger-arrow{font-size:9px;color:var(--text-dim);transition:transform 0.3s}
+  .scroll-wrapper{max-height:0;overflow:hidden;transition:max-height 0.6s cubic-bezier(0.4,0,0.2,1),opacity 0.4s ease;opacity:0;margin:0 auto}
+  .scroll-wrapper.open{max-height:3000px;opacity:1;margin:16px auto 32px}
+  .scroll{background:var(--dark2);border:1px solid var(--border-light);border-top:3px solid var(--gold);border-bottom:3px solid var(--gold);padding:28px 24px;position:relative;max-width:600px;margin:0 auto}
+  .scroll::before,.scroll::after{content:'';display:block;height:1px;background:linear-gradient(to right,transparent,var(--border-light),transparent);margin:0 -24px}
+  .scroll-inner{position:relative}
+  .scroll-seal{font-size:28px;display:block;text-align:center;margin-bottom:16px;opacity:0.4}
+  .scroll-text{font-family:var(--font-body);font-size:13px;line-height:2;color:var(--text-muted);text-align:center;letter-spacing:1px}
+  .scroll-text strong{color:var(--text);font-weight:700;font-family:var(--font-title);font-size:15px;letter-spacing:3px}
+  .scroll-text em{color:var(--gold);font-style:normal}
+  .scroll-divider{text-align:center;color:var(--border-light);margin:12px 0;letter-spacing:8px;font-size:10px}
+  .scroll-vow{font-family:var(--font-title);font-size:16px;letter-spacing:4px;color:var(--red);text-align:center;margin-top:16px;display:block}
+  .scroll-date{font-family:var(--font-mono);font-size:9px;letter-spacing:3px;color:var(--text-dim);text-align:center;margin-top:12px}
   .live-timer{text-align:center;margin-bottom:36px}
   .timer-label{font-size:9px;letter-spacing:5px;color:var(--text-dim);font-family:var(--font-mono);margin-bottom:6px}
   .timer-label.counting-up{color:var(--gold)}
@@ -206,9 +223,61 @@
    <div class="header">
     <div class="kanji-row">ムエタイ・365日間チャレンジ</div>
     <span class="title-main">PROJECT MUAY THAI</span>
-    <span class="title-sub" style="color:var(--gold)">FROM WEAK TO BAD MOTHERFUCKER</span>
-    <span class="title-sub">ONE YEAR OF TRAINING TO BECOME HEALTHY, STRONG AND MAKE HER PROUD</span>
-    <div class="header-divider"><span>武道の月</span></div>
+    <span class="title-sub" style="color:var(--gold)">ONE YEAR OF TRAINING,</span>
+    <span class="title-sub" style="color:var(--gold)">DISCIPLINE AND ZERO EXCUSES</span>
+    <span class="title-sub">TO LEAVE BEHIND WHO YOU WERE</span>
+    <span class="title-sub">AND BECOME PROUD OF WHO YOU'VE BECOME</span>
+  </div>
+
+  <!-- Manifesto Scroll -->
+  <div class="scroll-trigger" onclick="toggleScroll()">
+    <div class="scroll-trigger-line"></div>
+    <span class="scroll-trigger-label">誓い — MANIFESTO</span>
+    <span class="scroll-trigger-arrow" id="scroll-arrow">▼</span>
+    <div class="scroll-trigger-line"></div>
+  </div>
+  <div class="scroll-wrapper" id="scroll-wrapper">
+    <div class="scroll">
+      <div class="scroll-inner">
+        <div class="scroll-text">
+          I'm tired of looking in the mirror and seeing someone I don't respect. I'm tired of not keeping my promises, quitting when it gets hard, feel weak, useless, and most of all I hate disappointing her, and myself.<br><br>
+          After countless failed attempts, I want to leave all this shit in the past, completely change who I am and never look back.<br><br>
+          <strong>THIS CHANGES NOW.</strong><br><br>
+          I will train like a fighter. I will live like one.<br>
+          Not in one year. Not when I feel ready.<br>
+          <em>Starting today. Starting this moment.</em>
+        </div>
+        <div class="scroll-divider">· · · · · · · · · ·</div>
+        <div class="scroll-text">
+          Every session is a promise kept.<br>
+          Every day of discipline is a day I choose strength over weakness.<br>
+          Every time I want to quit, I remember — <em>I am her shield.</em><br><br>
+          A shield doesn't take days off.<br>
+          A shield doesn't make excuses.<br>
+          A shield is forged — through pain, through sweat, through showing up.
+        </div>
+        <div class="scroll-divider">· · · · · · · · · ·</div>
+        <div class="scroll-text">
+          This is my biggest transformation yet, Project Muay Thai.<br>
+          One year of living and training like a fighter until this identity is deeply rooted into my brain.<br><br>
+          When I look in the mirror, I wanna see a Fighter.<br>
+          A man that is tough, strong, disciplined and does what he says.<br>
+          <strong>A Bad Motherfucker.</strong>
+        </div>
+        <div class="scroll-divider">· · · · · · · · · ·</div>
+        <div class="scroll-text">
+          I want to look great and feel amazing.<br>
+          I want to be healthy, happy, full of energy and proud of myself.<br>
+          I want to be a Real Man for her, protect her, and make her feel safe behind my back or in my arms.<br>
+          I want to make her happy and proud.<br><br>
+          When this year is done, I will look in the mirror and see a Bad Motherfucker.<br>
+          Someone strong. Someone proud.<br>
+          <em>Someone she can count on.</em>
+        </div>
+        <span class="scroll-vow">I VOW TO EARN THAT REFLECTION — EVERY SINGLE DAY.</span>
+        <div class="scroll-date" id="scroll-date"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Live timer -->
@@ -383,6 +452,17 @@ function tickTimer(){
     label.className='timer-label counting-up';
     display.textContent=formatDuration(ms);
     display.className='timer-display counting-up';
+  }
+}
+
+function toggleScroll(){
+  const w=document.getElementById('scroll-wrapper');
+  const a=document.getElementById('scroll-arrow');
+  const open=w.classList.toggle('open');
+  a.textContent=open?'▲':'▼';
+  if(open&&startISO){
+    const d=new Date(startISO);
+    document.getElementById('scroll-date').textContent='— SIGNED ON '+d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}).toUpperCase()+' —';
   }
 }
 
