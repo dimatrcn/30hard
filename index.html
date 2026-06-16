@@ -12,6 +12,7 @@
   *{margin:0;padding:0;box-sizing:border-box}
   :root{
     --red:#c0392b;--red-light:#e74c3c;--gold:#d4a017;
+    --belt-white:#c8c8c8;--belt-blue:#3ea6ff;--belt-purple:#b05cff;--belt-brown:#c67a3d;--belt-black:#050505;--belt-black-border:#d4a017;
     --blue:#1a6b8a;--blue-light:#2196b0;
     --dark:#0a0a0a;--dark2:#111;--dark3:#1a1a1a;--dark4:#222;
     --text:#e8e0d0;--text-muted:#7a7060;--text-dim:#4a4540;
@@ -100,9 +101,11 @@
   .calendar-grid.collapsed{max-height:0;opacity:0;margin:0}
   .day-dot{aspect-ratio:1;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;font-family:var(--font-mono);color:var(--text-dim);cursor:pointer;transition:all 0.15s;position:relative;background:var(--dark2)}
   .day-dot:hover{border-color:var(--text-muted)}
-  .day-dot.perfect{background:var(--dark3);border-color:var(--gold);color:var(--gold)}
-  .day-dot.perfect::after{content:'';position:absolute;inset:3px;background:rgba(212,160,23,0.12)}
-  .day-dot.partial{background:var(--dark3);border-color:var(--red);color:var(--red)}
+  .day-dot.white{background:#1c1c1c;border-color:var(--belt-white);color:var(--belt-white)}
+  .day-dot.blue{background:rgba(62,166,255,0.12);border-color:var(--belt-blue);color:var(--belt-blue);box-shadow:0 0 6px rgba(62,166,255,0.35)}
+  .day-dot.purple{background:rgba(176,92,255,0.14);border-color:var(--belt-purple);color:var(--belt-purple);box-shadow:0 0 8px rgba(176,92,255,0.4)}
+  .day-dot.brown{background:rgba(198,122,61,0.15);border-color:var(--belt-brown);color:var(--belt-brown);box-shadow:0 0 8px rgba(198,122,61,0.35)}
+  .day-dot.black{background:var(--belt-black);border:2px solid var(--belt-black-border);color:var(--belt-black-border);box-shadow:0 0 10px rgba(212,160,23,0.5)}
   .day-dot.today{border-color:var(--red-light);box-shadow:0 0 8px rgba(231,76,60,0.4);color:var(--text);font-weight:700}
   .day-dot.selected{background:var(--red);border-color:var(--red-light);color:#fff}
   .habits-section{margin-bottom:40px}
@@ -223,10 +226,9 @@
    <div class="header">
     <div class="kanji-row">ムエタイ・365日間チャレンジ</div>
     <span class="title-main">PROJECT CHAMA</span>
-    <span class="title-sub" style="color:var(--gold)">ONE YEAR OF TRAINING,</span>
-    <span class="title-sub" style="color:var(--gold)">DISCIPLINE AND ZERO EXCUSES</span>
-    <span class="title-sub">TO LEAVE BEHIND WHO YOU WERE</span>
-    <span class="title-sub">AND BECOME PROUD OF WHO YOU'VE BECOME</span>
+    <span class="title-sub" style="color:var(--gold)">ONE YEAR KICKBOXING TRANSFORMATION</span>
+    <span class="title-sub" style="color:var(--gold)">TO SEE WHAT IT DOES TO MY BODY AND MIND</span>
+    <span class="title-sub">GOAL: BE HEALTHY, LOOK GOOD AND FEEL AMAZING</span>
   </div>
 
   <!-- Manifesto Scroll -->
@@ -540,7 +542,17 @@ function renderCalendar(){
     if(dayIdx<0)dot.classList.add('future');
     else if(i>dayIdx)dot.classList.add('future');
     else if(i===dayIdx)dot.classList.add('today');
-    else{const d=state[key];if(d&&d.habits&&d.habits.length===TOTAL&&(d.hydration||0)>=HYDRATION_GOAL)dot.classList.add('perfect');else if(d&&((d.habits&&d.habits.length>0)||(d.hydration||0)>0))dot.classList.add('partial');}
+    else{
+      const d=state[key];
+      if(d){
+        const score=(d.habits?.length||0)+(((d.hydration||0)>=HYDRATION_GOAL)?1:0);
+        if(score<=1) dot.classList.add('white');
+        else if(score<=4) dot.classList.add('blue');
+        else if(score<=6) dot.classList.add('purple');
+        else if(score<=8) dot.classList.add('brown');
+        else dot.classList.add('black');
+      }
+    }
     dot.onclick=()=>{if(dayIdx>=0){viewingDay=i;renderCalendar();renderToday();}};
     const activeIdx=viewingDay!==null?viewingDay:Math.max(dayIdx,0);
     if(dayIdx>=0&&i===activeIdx)dot.classList.add('selected');
