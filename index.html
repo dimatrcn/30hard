@@ -347,6 +347,11 @@
         <div class="habit-item" data-id="cold" onclick="toggleHabit(this)"><div class="habit-left"><div class="habit-icon">氷</div><div><div class="habit-name">Cold Exposure</div><span class="habit-name-ja">冷水浴 — REISUI-YOKU</span></div></div><div class="habit-check"></div></div>
         <div class="habit-item" data-id="sleep" onclick="toggleHabit(this)"><div class="habit-left"><div class="habit-icon">眠</div><div><div class="habit-name">7+ Hours Sleep</div><span class="habit-name-ja">快眠 — KAI-MIN</span></div></div><div class="habit-check"></div></div>
       </div>
+      <div class="habit-group">
+        <div class="group-title">精神 — MIND</div>
+        <div class="habit-item" data-id="reading" onclick="toggleHabit(this)"><div class="habit-left"><div class="habit-icon">読</div><div><div class="habit-name">Reading Daily</div><span class="habit-name-ja">読書 — DOKUSHO</span></div></div><div class="habit-check"></div></div>
+        <div class="habit-item" data-id="fpv-sim" onclick="toggleHabit(this)"><div class="habit-left"><div class="habit-icon">飛</div><div><div class="habit-name">FPV Simulator</div><span class="habit-name-ja">模擬飛行 — MOGI-HIKŌ</span></div></div><div class="habit-check"></div></div>
+      </div>
       <button class="save-btn" id="save-btn" onclick="saveDay()">記録 — SAVE DAY</button>
     </div>
   </div>
@@ -393,8 +398,8 @@
 </div>
 
 <script>
-const HABITS=['no-nicotine','no-alcohol','no-junk','creatine','high-protein','muay-thai','cold','sleep'];
-const TOTAL=8, HYDRATION_GOAL=2000, TZ='Europe/Bucharest';
+const HABITS=['no-nicotine','no-alcohol','no-junk','creatine','high-protein','muay-thai','cold','sleep','reading','fpv-sim'];
+const TOTAL=10, HYDRATION_GOAL=2000, TZ='Europe/Bucharest';
 let state={}, startISO=null, aerobicSessions=[], weeklyTarget=120, viewingDay=null, selectedType='Running';
 
 function getBucharestNow(){return new Date(new Date().toLocaleString('en-US',{timeZone:TZ}));}
@@ -547,8 +552,8 @@ function renderCalendar(){
         const score=(d.habits?.length||0)+(((d.hydration||0)>=HYDRATION_GOAL)?1:0);
         if(score<=1) dot.classList.add('white');
         else if(score<=4) dot.classList.add('blue');
-        else if(score<=6) dot.classList.add('purple');
-        else if(score<=8) dot.classList.add('brown');
+        else if(score<=7) dot.classList.add('purple');
+        else if(score<=9) dot.classList.add('brown');
         else dot.classList.add('black');
       }
     }
