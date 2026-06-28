@@ -502,13 +502,21 @@ function saveSettings(){
 }
 
 function getDayIndex(){
-  const ms=getMsFromStart(); if(ms===null)return -1;
-  return Math.floor(ms/86400000);
+  const ms=getMsFromStart(); if(ms===null||ms<0)return ms===null?-1:Math.floor(ms/86400000);
+  // Use calendar date difference so each new day starts at midnight, not 24h after start time
+  const ts=getStartTimestamp(); if(!ts)return -1;
+  const startDateStr=ts.toLocaleDateString('en-CA',{timeZone:TZ});
+  const todayStr=getBucharestDateStr();
+  const startMidnight=new Date(startDateStr+'T00:00:00');
+  const todayMidnight=new Date(todayStr+'T00:00:00');
+  return Math.round((todayMidnight-startMidnight)/86400000);
 }
 
 function getDayKey(idx){
   const ts=getStartTimestamp(); if(!ts)return getBucharestDateStr();
-  const target=new Date(ts.getTime()+idx*86400000);
+  const startDateStr=ts.toLocaleDateString('en-CA',{timeZone:TZ});
+  const startMidnight=new Date(startDateStr+'T12:00:00'); // noon to avoid DST edge cases
+  const target=new Date(startMidnight.getTime()+idx*86400000);
   return target.toLocaleDateString('en-CA',{timeZone:TZ});
 }
 
